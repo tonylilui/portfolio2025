@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   AppBar,
@@ -40,11 +41,20 @@ const NAV_ITEMS = [
 
 export default function Layout({ children, onToggleTheme, currentTheme }: LayoutProps) {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
   };
 
   const drawer = (
@@ -54,7 +64,10 @@ export default function Layout({ children, onToggleTheme, currentTheme }: Layout
       <List>
         {NAV_ITEMS.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton>
+            <ListItemButton 
+              selected={location.pathname === item.path}
+              onClick={() => handleNavigation(item.path)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
