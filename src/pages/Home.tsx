@@ -4,7 +4,15 @@ export default function Home() {
   return (
     <Stack spacing={0}>
       <section id="home" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <Paper sx={{ p: 3, width: '100%' }}>
+        <Paper sx={{ 
+          p: 3, 
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }}>
           <Typography variant="h3" gutterBottom>
             Welcome to My Portfolio
           </Typography>
@@ -15,7 +23,15 @@ export default function Home() {
       </section>
 
       <section id="about" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <Paper sx={{ p: 3, width: '100%' }}>
+        <Paper sx={{ 
+          p: 3, 
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }}>
           <Typography variant="h4" gutterBottom>
             About Me
           </Typography>
@@ -26,7 +42,15 @@ export default function Home() {
       </section>
 
       <section id="projects" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <Paper sx={{ p: 3, width: '100%' }}>
+        <Paper sx={{ 
+          p: 3, 
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }}>
           <Typography variant="h4" gutterBottom>
             Featured Projects
           </Typography>
@@ -37,7 +61,15 @@ export default function Home() {
       </section>
 
       <section id="contact" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <Paper sx={{ p: 3, width: '100%' }}>
+        <Paper sx={{ 
+          p: 3, 
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }}>
           <Typography variant="h4" gutterBottom>
             Get in Touch
           </Typography>
