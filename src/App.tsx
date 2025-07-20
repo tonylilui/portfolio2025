@@ -8,13 +8,53 @@ import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 
 function App() {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<'light' | 'dark'>('dark');
 
   const theme = useMemo(
     () =>
       createTheme({
         palette: {
           mode,
+          primary: {
+            main: '#4a90e2',
+            light: '#6eb0ff',
+            dark: '#2170b0',
+          },
+          background: {
+            default: '#0a192f',
+            paper: 'rgba(26, 32, 44, 0.8)',
+          },
+          text: {
+            primary: '#4a90e2',
+            secondary: '#64b5f6',
+          },
+        },
+        components: {
+          MuiPaper: {
+            styleOverrides: {
+              root: {
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(26, 32, 44, 0.5)',
+                borderColor: '#4a90e2',
+              },
+            },
+          },
+          MuiDrawer: {
+            styleOverrides: {
+              paper: {
+                background: 'rgba(26, 32, 44, 0.8)',
+                borderRight: '1px solid rgba(74, 144, 226, 0.1)',
+              },
+            },
+          },
+          MuiAppBar: {
+            styleOverrides: {
+              root: {
+                background: 'rgba(26, 32, 44, 0.8)',
+                borderBottom: '1px solid rgba(74, 144, 226, 0.1)',
+              },
+            },
+          },
         },
       }),
     [mode]
