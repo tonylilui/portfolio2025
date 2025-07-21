@@ -170,53 +170,66 @@ export default function Layout({ children, onToggleTheme, currentTheme }: Layout
             borderBottom: '1px solid rgba(74, 144, 226, 0.1)'
           }}
         >
-          <motion.div
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ type: "spring", stiffness: 100, damping: 20 }}
-          >
-            <Toolbar>
-              {isMobile && (
-                <IconButton
-                  color="inherit"
-                  edge="start"
-                  onClick={handleDrawerToggle}
-                  sx={{ mr: 2 }}
-                >
-                  <MenuIcon />
-                </IconButton>
-              )}
+          <Toolbar>
+            {isMobile && (
+              <IconButton
+                color="inherit"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-start' }}>
               <Typography 
                 variant="h6" 
                 component={motion.div}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                animate={{ 
+                  opacity: 1,
+                  y: 0
+                }}
+                initial={{
+                  opacity: 0,
+                  y: 0
+                }}
+                transition={{
+                  duration: 0.5,
+                  ease: "easeOut"
+                }}
                 sx={{ 
-                  flexGrow: 1,
                   background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  transformOrigin: 'center center',
+                  cursor: 'pointer'
                 }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { type: "spring", stiffness: 400, damping: 10 }
+                }}
               >
-                Portfolio
+                TonyStack
               </Typography>
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <IconButton 
-                  onClick={onToggleTheme} 
-                  color="inherit"
-                  sx={{
-                    background: 'rgba(74, 144, 226, 0.1)',
-                    '&:hover': {
-                      background: 'rgba(74, 144, 226, 0.2)'
-                    }
-                  }}
-                >
-                  {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-                </IconButton>
-              </motion.div>
-            </Toolbar>
-          </motion.div>
+            </Box>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <IconButton 
+                onClick={onToggleTheme} 
+                color="inherit"
+                sx={{
+                  background: 'rgba(74, 144, 226, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(74, 144, 226, 0.2)'
+                  }
+                }}
+              >
+                {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
+            </motion.div>
+          </Toolbar>
           
           {/* Scroll Progress Indicator */}
           <motion.div
