@@ -1,6 +1,7 @@
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -9,6 +10,10 @@ import Contact from './pages/Contact';
 
 function App() {
   const [mode, setMode] = useState<'light' | 'dark'>('dark');
+
+  useEffect(() => {
+    emailjs.init('q70Fxa0fZZECYPrQg'); // Replace with your EmailJS public key
+  }, []);
 
   const theme = useMemo(
     () =>

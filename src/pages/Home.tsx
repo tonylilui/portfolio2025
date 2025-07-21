@@ -5,6 +5,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import SendIcon from '@mui/icons-material/Send';
+import emailjs from '@emailjs/browser';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -428,15 +429,37 @@ export default function Home() {
 
               <Box 
                 component="form" 
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  const formData = new FormData(e.currentTarget as HTMLFormElement);
-                  const data = {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    message: formData.get('message')
-                  };
-                  console.log(data);
+                  const form = e.currentTarget as HTMLFormElement;
+                  const formData = new FormData(form);
+                  
+                  // Email validation
+                  const email = formData.get('email') as string;
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                  if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address');
+                    return;
+                  }
+
+                  try {
+                    await emailjs.send(
+                      'template_contact', // Replace with your EmailJS service ID
+                      'template_1kjdm94', // Replace with your EmailJS template ID
+                      {
+                        from_name: formData.get('name'),
+                        from_email: email,
+                        message: formData.get('message'),
+                        to_email: 'tony.lilui@live.com',
+                      },
+                      'q70Fxa0fZZECYPrQg' // Replace with your EmailJS public key
+                    );
+                    alert('Message sent successfully! I\'ll get back to you soon.');
+                    form.reset();
+                  } catch (error) {
+                    console.error('Failed to send email:', error);
+                    alert('Failed to send message. Please try again later.');
+                  }
                 }}
                 sx={{ 
                   mt: 4,
