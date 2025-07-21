@@ -1,5 +1,10 @@
-import { Typography, Paper, Stack, Box, Container } from '@mui/material';
+import { Typography, Paper, Stack, Box, Container, Button, Link, TextField, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LaunchIcon from '@mui/icons-material/Launch';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import EmailIcon from '@mui/icons-material/Email';
+import SendIcon from '@mui/icons-material/Send';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -9,7 +14,7 @@ const containerVariants = {
       staggerChildren: 0.3
     }
   }
-};
+} as const;
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -17,12 +22,47 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
       damping: 10
     }
   }
-};
+} as const;
+
+const projectData = [
+  {
+    title: 'AI-Powered Code Assistant',
+    description: 'A VS Code extension leveraging machine learning to provide intelligent code suggestions and auto-completions.',
+    tech: ['TypeScript', 'React', 'Python', 'TensorFlow'],
+    image: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
+    github: 'https://github.com/yourusername/code-assistant',
+    demo: 'https://marketplace.visualstudio.com'
+  },
+  {
+    title: '3D Portfolio Website',
+    description: 'An interactive portfolio website built with Three.js and React, featuring custom 3D animations and effects.',
+    tech: ['React', 'Three.js', 'TypeScript', 'Framer Motion'],
+    image: 'linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)',
+    github: 'https://github.com/yourusername/portfolio',
+    demo: 'https://yourportfolio.com'
+  },
+  {
+    title: 'E-commerce Platform',
+    description: 'A full-stack e-commerce solution with real-time inventory management and payment processing.',
+    tech: ['Next.js', 'Node.js', 'MongoDB', 'Stripe'],
+    image: 'linear-gradient(135deg, #7F7FD5 0%, #86A8E7 50%, #91EAE4 100%)',
+    github: 'https://github.com/yourusername/ecommerce',
+    demo: 'https://yourecommerce.com'
+  },
+  {
+    title: 'Blockchain Explorer',
+    description: 'A web application for exploring and analyzing blockchain transactions with real-time updates.',
+    tech: ['React', 'Web3.js', 'Node.js', 'PostgreSQL'],
+    image: 'linear-gradient(135deg, #654ea3 0%, #eaafc8 100%)',
+    github: 'https://github.com/yourusername/blockchain-explorer',
+    demo: 'https://yourexplorer.com'
+  }
+];
 
 export default function Home() {
   return (
@@ -189,6 +229,140 @@ export default function Home() {
               <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
                 Check out some of my best work as you scroll through this interactive portfolio.
               </Typography>
+              
+              <Box sx={{ 
+                display: 'grid', 
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                gap: 4,
+                mt: 4
+              }}>
+                {projectData.map((project) => (
+                  <motion.div
+                    key={project.title}
+                    variants={itemVariants}
+                    whileHover={{ 
+                      scale: 1.02,
+                      transition: { type: "spring", stiffness: 400, damping: 10 }
+                    }}
+                    style={{ height: '100%' }}
+                  >
+                    <Paper
+                      sx={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&:before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: '120px',
+                          background: project.image,
+                          opacity: 0.2
+                        }
+                      }}
+                    >
+                      <Box sx={{ 
+                        position: 'relative',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        p: 3
+                      }}>
+                        <Typography 
+                          variant="h5" 
+                          gutterBottom
+                          sx={{ 
+                            fontWeight: 'bold',
+                            background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
+                            backgroundClip: 'text',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            mt: 7
+                          }}
+                        >
+                          {project.title}
+                        </Typography>
+                        <Typography 
+                          variant="body1" 
+                          paragraph
+                          sx={{ color: 'rgba(255, 255, 255, 0.8)', flexGrow: 1 }}
+                        >
+                          {project.description}
+                        </Typography>
+                        <Box sx={{ 
+                          display: 'flex', 
+                          flexWrap: 'wrap', 
+                          gap: 1,
+                          mb: 2
+                        }}>
+                          {project.tech.map((tech) => (
+                            <Typography
+                              key={tech}
+                              sx={{
+                                px: 1.5,
+                                py: 0.5,
+                                borderRadius: '4px',
+                                fontSize: '0.75rem',
+                                background: 'rgba(74, 144, 226, 0.1)',
+                                border: '1px solid rgba(74, 144, 226, 0.2)',
+                                color: '#4a90e2'
+                              }}
+                            >
+                              {tech}
+                            </Typography>
+                          ))}
+                        </Box>
+                        <Box sx={{ 
+                          display: 'flex',
+                          gap: 2,
+                          mt: 'auto'
+                        }}>
+                          <Button
+                            component={Link}
+                            href={project.github}
+                            target="_blank"
+                            startIcon={<GitHubIcon />}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              borderColor: 'rgba(74, 144, 226, 0.5)',
+                              color: '#4a90e2',
+                              '&:hover': {
+                                borderColor: '#4a90e2',
+                                background: 'rgba(74, 144, 226, 0.1)'
+                              }
+                            }}
+                          >
+                            Code
+                          </Button>
+                          <Button
+                            component={Link}
+                            href={project.demo}
+                            target="_blank"
+                            startIcon={<LaunchIcon />}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              borderColor: 'rgba(74, 144, 226, 0.5)',
+                              color: '#4a90e2',
+                              '&:hover': {
+                                borderColor: '#4a90e2',
+                                background: 'rgba(74, 144, 226, 0.1)'
+                              }
+                            }}
+                          >
+                            Live Demo
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Paper>
+                  </motion.div>
+                ))}
+              </Box>
             </motion.div>
           </Paper>
         </motion.section>
@@ -238,6 +412,190 @@ export default function Home() {
               <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
                 Interested in working together? Let's connect!
               </Typography>
+
+              <Box 
+                component="form" 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget as HTMLFormElement);
+                  const data = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    message: formData.get('message')
+                  };
+                  console.log(data);
+                  // You can integrate with your preferred email service here
+                }}
+                sx={{ mt: 4 }}
+              >
+                <Box sx={{ 
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                  gap: 3
+                }}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="name"
+                    label="Your Name"
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        '& fieldset': {
+                          borderColor: 'rgba(74, 144, 226, 0.3)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(74, 144, 226, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#4a90e2',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(74, 144, 226, 0.8)',
+                      },
+                    }}
+                  />
+                  <TextField
+                    required
+                    fullWidth
+                    name="email"
+                    label="Your Email"
+                    type="email"
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        '& fieldset': {
+                          borderColor: 'rgba(74, 144, 226, 0.3)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(74, 144, 226, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#4a90e2',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(74, 144, 226, 0.8)',
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ mt: 3 }}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="message"
+                    label="Your Message"
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        '& fieldset': {
+                          borderColor: 'rgba(74, 144, 226, 0.3)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(74, 144, 226, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#4a90e2',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(74, 144, 226, 0.8)',
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ mt: 3 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    endIcon={<SendIcon />}
+                    sx={{
+                      background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
+                      px: 4,
+                      py: 1.5,
+                      '&:hover': {
+                        background: 'linear-gradient(45deg, #2170b0, #4a90e2)',
+                      }
+                    }}
+                  >
+                    Send Message
+                  </Button>
+                </Box>
+              </Box>
+
+              <Box sx={{ 
+                mt: 6,
+                pt: 4,
+                borderTop: '1px solid rgba(74, 144, 226, 0.2)',
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 3
+              }}>
+                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                  Or connect with me on:
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                    <IconButton
+                      component={Link}
+                      href="https://github.com/yourusername"
+                      target="_blank"
+                      sx={{
+                        color: '#4a90e2',
+                        border: '1px solid rgba(74, 144, 226, 0.3)',
+                        '&:hover': {
+                          background: 'rgba(74, 144, 226, 0.1)',
+                          borderColor: '#4a90e2'
+                        }
+                      }}
+                    >
+                      <GitHubIcon />
+                    </IconButton>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                    <IconButton
+                      component={Link}
+                      href="https://linkedin.com/in/yourusername"
+                      target="_blank"
+                      sx={{
+                        color: '#4a90e2',
+                        border: '1px solid rgba(74, 144, 226, 0.3)',
+                        '&:hover': {
+                          background: 'rgba(74, 144, 226, 0.1)',
+                          borderColor: '#4a90e2'
+                        }
+                      }}
+                    >
+                      <LinkedInIcon />
+                    </IconButton>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                    <IconButton
+                      component={Link}
+                      href="mailto:your.email@example.com"
+                      sx={{
+                        color: '#4a90e2',
+                        border: '1px solid rgba(74, 144, 226, 0.3)',
+                        '&:hover': {
+                          background: 'rgba(74, 144, 226, 0.1)',
+                          borderColor: '#4a90e2'
+                        }
+                      }}
+                    >
+                      <EmailIcon />
+                    </IconButton>
+                  </motion.div>
+                </Box>
+              </Box>
             </motion.div>
           </Paper>
         </motion.section>
