@@ -15,6 +15,7 @@ import {
   ListItemIcon,
   Divider
 } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -76,7 +77,7 @@ export default function Layout({ children, onToggleTheme, currentTheme }: Layout
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -104,15 +105,51 @@ export default function Layout({ children, onToggleTheme, currentTheme }: Layout
       <Divider />
       <List>
         {NAV_ITEMS.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton 
-              selected={currentSection === item.path}
-              onClick={() => handleNavigation(item.path)}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
+          <motion.div
+            key={item.text}
+            whileHover={{ scale: 1.02, x: 5 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <ListItem disablePadding>
+              <ListItemButton 
+                selected={currentSection === item.path}
+                onClick={() => handleNavigation(item.path)}
+                sx={{
+                  borderRadius: '8px',
+                  mx: 1,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                    '&:before': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: '4px',
+                      backgroundColor: '#4a90e2',
+                      borderRadius: '0 2px 2px 0'
+                    }
+                  }
+                }}
+              >
+                <ListItemIcon sx={{ 
+                  color: currentSection === item.path ? '#4a90e2' : 'inherit',
+                  transition: 'color 0.3s ease'
+                }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText 
+                  primary={item.text}
+                  sx={{ 
+                    color: currentSection === item.path ? '#4a90e2' : 'inherit',
+                    transition: 'color 0.3s ease'
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          </motion.div>
         ))}
       </List>
     </Box>
@@ -123,70 +160,121 @@ export default function Layout({ children, onToggleTheme, currentTheme }: Layout
       <Scene scrollProgress={scrollProgress} currentSection={currentSection} />
       
       <Box sx={{ position: 'relative', zIndex: 1 }}>
-        <AppBar position="fixed" 
+        <AppBar 
+          position="fixed" 
+          elevation={0}
           sx={{ 
             zIndex: theme.zIndex.drawer + 1,
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)'
+            background: 'rgba(26, 32, 44, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderBottom: '1px solid rgba(74, 144, 226, 0.1)'
           }}
         >
-          <Toolbar>
-            {isMobile && (
-              <IconButton
-                color="inherit"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ mr: 2 }}
+          <motion.div
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          >
+            <Toolbar>
+              {isMobile && (
+                <IconButton
+                  color="inherit"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ mr: 2 }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
+              <Typography 
+                variant="h6" 
+                component={motion.div}
+                sx={{ 
+                  flexGrow: 1,
+                  background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontWeight: 'bold'
+                }}
+                whileHover={{ scale: 1.05 }}
               >
-                <MenuIcon />
-              </IconButton>
-            )}
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Portfolio
-            </Typography>
-            <IconButton onClick={onToggleTheme} color="inherit">
-              {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-          </Toolbar>
+                Portfolio
+              </Typography>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <IconButton 
+                  onClick={onToggleTheme} 
+                  color="inherit"
+                  sx={{
+                    background: 'rgba(74, 144, 226, 0.1)',
+                    '&:hover': {
+                      background: 'rgba(74, 144, 226, 0.2)'
+                    }
+                  }}
+                >
+                  {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+              </motion.div>
+            </Toolbar>
+          </motion.div>
+          
+          {/* Scroll Progress Indicator */}
+          <motion.div
+            style={{
+              height: '2px',
+              background: '#4a90e2',
+              transformOrigin: '0%',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0
+            }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: scrollProgress }}
+          />
         </AppBar>
 
         <Box
           component="nav"
           sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
         >
-          {isMobile ? (
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-              ModalProps={{ keepMounted: true }}
-              sx={{
-                '& .MuiDrawer-paper': { 
-                  boxSizing: 'border-box', 
-                  width: DRAWER_WIDTH,
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)'
-                },
-              }}
-            >
-              {drawer}
-            </Drawer>
-          ) : (
-            <Drawer
-              variant="permanent"
-              sx={{
-                '& .MuiDrawer-paper': { 
-                  boxSizing: 'border-box', 
-                  width: DRAWER_WIDTH,
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)'
-                },
-              }}
-              open
-            >
-              {drawer}
-            </Drawer>
-          )}
+          <AnimatePresence>
+            {isMobile ? (
+              <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{ keepMounted: true }}
+                sx={{
+                  '& .MuiDrawer-paper': { 
+                    boxSizing: 'border-box', 
+                    width: DRAWER_WIDTH,
+                    background: 'rgba(26, 32, 44, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    borderRight: '1px solid rgba(74, 144, 226, 0.1)'
+                  },
+                }}
+              >
+                {drawer}
+              </Drawer>
+            ) : (
+              <Drawer
+                variant="permanent"
+                sx={{
+                  '& .MuiDrawer-paper': { 
+                    boxSizing: 'border-box', 
+                    width: DRAWER_WIDTH,
+                    background: 'rgba(26, 32, 44, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    borderRight: '1px solid rgba(74, 144, 226, 0.1)'
+                  },
+                }}
+                open
+              >
+                {drawer}
+              </Drawer>
+            )}
+          </AnimatePresence>
         </Box>
 
         <Box
