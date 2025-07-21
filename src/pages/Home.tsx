@@ -1,4 +1,4 @@
-import { Typography, Paper, Stack, Box, Container, Button, Link, TextField, IconButton } from '@mui/material';
+import { Typography, Paper, Stack, Box, Container, Button, Link, TextField, IconButton, Snackbar, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -6,6 +6,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import SendIcon from '@mui/icons-material/Send';
 import emailjs from '@emailjs/browser';
+import { useState } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -79,6 +80,12 @@ const projectData = [
 ];
 
 export default function Home() {
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  });
+
   return (
     <Container maxWidth="lg">
       <Stack spacing={4}>
@@ -192,7 +199,7 @@ export default function Home() {
                 About Me
               </Typography>
               <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
-                I'm a passionate developer focused on creating engaging web experiences.
+                I like to build cool stuff. Open to internship opportunities!
               </Typography>
             </motion.div>
           </Paper>
@@ -438,27 +445,39 @@ export default function Home() {
                   const email = formData.get('email') as string;
                   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                   if (!emailRegex.test(email)) {
-                    alert('Please enter a valid email address');
+                    setSnackbar({
+                      open: true,
+                      message: 'Please enter a valid email address',
+                      severity: 'error'
+                    });
                     return;
                   }
 
                   try {
                     await emailjs.send(
-                      'template_contact', // Replace with your EmailJS service ID
-                      'template_1kjdm94', // Replace with your EmailJS template ID
+                      'template_contact',
+                      'template_1kjdm94',
                       {
                         from_name: formData.get('name'),
                         from_email: email,
                         message: formData.get('message'),
                         to_email: 'tony.lilui@live.com',
                       },
-                      'q70Fxa0fZZECYPrQg' // Replace with your EmailJS public key
+                      'q70Fxa0fZZECYPrQg'
                     );
-                    alert('Message sent successfully! I\'ll get back to you soon.');
+                    setSnackbar({
+                      open: true,
+                      message: 'Message sent successfully! I\'ll get back to you soon.',
+                      severity: 'success'
+                    });
                     form.reset();
                   } catch (error) {
                     console.error('Failed to send email:', error);
-                    alert('Failed to send message. Please try again later.');
+                    setSnackbar({
+                      open: true,
+                      message: 'Failed to send message. Please try again later.',
+                      severity: 'error'
+                    });
                   }
                 }}
                 sx={{ 
@@ -644,6 +663,28 @@ export default function Home() {
                   </Button>
                 </motion.div>
               </Box>
+
+              <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              >
+                <Alert
+                  onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+                  severity={snackbar.severity}
+                  variant="filled"
+                  sx={{
+                    borderRadius: '12px',
+                    background: snackbar.severity === 'success' 
+                      ? 'linear-gradient(45deg, #4CAF50, #81C784)'
+                      : 'linear-gradient(45deg, #f44336, #e57373)',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                  }}
+                >
+                  {snackbar.message}
+                </Alert>
+              </Snackbar>
 
               <Box sx={{ 
                 mt: 6,

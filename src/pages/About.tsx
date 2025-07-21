@@ -15,7 +15,7 @@ export default function About() {
           About Me
         </Typography>
         <Typography variant="body1">
-          This is where you can share your story, experience, and skills.
+          I like to build cool stuff. Open to internship opportunities!
         </Typography>
       </Paper>
     </Box>
