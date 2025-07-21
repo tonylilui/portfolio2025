@@ -17,8 +17,6 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
@@ -27,8 +25,6 @@ import { Scene } from './Scene';
 
 interface LayoutProps {
   children: ReactNode;
-  onToggleTheme: () => void;
-  currentTheme: 'light' | 'dark';
 }
 
 const DRAWER_WIDTH = 240;
@@ -39,7 +35,7 @@ const NAV_ITEMS = [
   { text: 'Contact', icon: <ContactMailIcon />, path: 'contact' }
 ];
 
-export default function Layout({ children, onToggleTheme, currentTheme }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -215,23 +211,8 @@ export default function Layout({ children, onToggleTheme, currentTheme }: Layout
                 TonyStack
               </Typography>
             </Box>
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-              <IconButton 
-                onClick={onToggleTheme} 
-                color="inherit"
-                sx={{
-                  background: 'rgba(74, 144, 226, 0.1)',
-                  '&:hover': {
-                    background: 'rgba(74, 144, 226, 0.2)'
-                  }
-                }}
-              >
-                {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-              </IconButton>
-            </motion.div>
           </Toolbar>
           
-          {/* Scroll Progress Indicator */}
           <motion.div
             style={{
               height: '2px',

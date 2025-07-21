@@ -1,5 +1,5 @@
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import Layout from './components/Layout';
@@ -9,8 +9,6 @@ import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 
 function App() {
-  const [mode, setMode] = useState<'light' | 'dark'>('dark');
-
   useEffect(() => {
     emailjs.init('q70Fxa0fZZECYPrQg'); // Replace with your EmailJS public key
   }, []);
@@ -19,7 +17,7 @@ function App() {
     () =>
       createTheme({
         palette: {
-          mode,
+          mode: 'dark',
           primary: {
             main: '#4a90e2',
             light: '#6eb0ff',
@@ -62,18 +60,14 @@ function App() {
           },
         },
       }),
-    [mode]
+    []
   );
-
-  const toggleTheme = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-  };
 
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Layout onToggleTheme={toggleTheme} currentTheme={mode}>
+        <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
