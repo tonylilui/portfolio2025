@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LaunchIcon from '@mui/icons-material/Launch';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import EmailIcon from '@mui/icons-material/Email';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import SendIcon from '@mui/icons-material/Send';
 
 const containerVariants = {
@@ -639,7 +639,7 @@ export default function Home() {
                   <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                     <IconButton
                       component={Link}
-                      href="https://github.com/yourusername"
+                      href="https://github.com/tonylilui"
                       target="_blank"
                       sx={{
                         color: '#4a90e2',
@@ -656,7 +656,7 @@ export default function Home() {
                   <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                     <IconButton
                       component={Link}
-                      href="https://linkedin.com/in/yourusername"
+                      href="https://linkedin.com/in/tonylilui"
                       target="_blank"
                       sx={{
                         color: '#4a90e2',
@@ -673,7 +673,8 @@ export default function Home() {
                   <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                     <IconButton
                       component={Link}
-                      href="mailto:your.email@example.com"
+                      href="https://www.instagram.com/tonystackofficial"
+                      target="_blank"
                       sx={{
                         color: '#4a90e2',
                         border: '1px solid rgba(74, 144, 226, 0.3)',
@@ -683,7 +684,7 @@ export default function Home() {
                         }
                       }}
                     >
-                      <EmailIcon />
+                      <InstagramIcon />
                     </IconButton>
                   </motion.div>
                 </Box>
