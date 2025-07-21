@@ -5,8 +5,9 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import SendIcon from '@mui/icons-material/Send';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import emailjs from '@emailjs/browser';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -85,9 +86,28 @@ export default function Home() {
     message: '',
     severity: 'success' as 'success' | 'error'
   });
+  
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setShowScrollIndicator(scrollPosition < 100);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToNextSection = () => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ position: 'relative' }}>
       <Stack spacing={4}>
         <motion.section
           id="home"
@@ -757,6 +777,82 @@ export default function Home() {
           </Paper>
         </motion.section>
       </Stack>
+      
+      {/* Fixed Arrow Indicator */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ 
+          opacity: showScrollIndicator ? 1 : 0,
+          y: showScrollIndicator ? 0 : 20 
+        }}
+        transition={{ 
+          duration: 0.4,
+          ease: "easeOut"
+        }}
+        style={{
+          position: 'fixed',
+          left: '50%',
+          bottom: '40px',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '8px',
+          cursor: 'pointer',
+          zIndex: 10,
+          pointerEvents: showScrollIndicator ? 'auto' : 'none'
+        }}
+        onClick={scrollToNextSection}
+      >
+        <motion.div
+          animate={{ 
+            y: showScrollIndicator ? [0, 8, 0] : 0,
+            opacity: showScrollIndicator ? [0.3, 1, 0.3] : 0,
+          }}
+          transition={{
+            duration: 2,
+            repeat: showScrollIndicator ? Infinity : 0,
+            ease: "easeInOut"
+          }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '-12px'
+          }}
+        >
+          <KeyboardArrowDownIcon 
+            sx={{ 
+              color: '#4a90e2',
+              fontSize: '2.5rem',
+              filter: 'drop-shadow(0 0 10px rgba(74, 144, 226, 0.4))',
+            }}
+          />
+          <KeyboardArrowDownIcon 
+            sx={{ 
+              color: '#4a90e2',
+              fontSize: '2.5rem',
+              opacity: 0.7,
+              marginTop: '-12px',
+              filter: 'drop-shadow(0 0 10px rgba(74, 144, 226, 0.2))',
+            }}
+          />
+        </motion.div>
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'rgba(74, 144, 226, 0.8)',
+            fontSize: '0.75rem',
+            fontWeight: 500,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            textShadow: '0 0 10px rgba(74, 144, 226, 0.3)',
+            opacity: 0.8
+          }}
+        >
+          Scroll
+        </Typography>
+      </motion.div>
     </Container>
   );
 }
