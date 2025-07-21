@@ -29,6 +29,19 @@ const itemVariants = {
   }
 } as const;
 
+const formItemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 10
+    }
+  }
+} as const;
+
 const projectData = [
   {
     title: 'AI-Powered Code Assistant',
@@ -424,66 +437,116 @@ export default function Home() {
                     message: formData.get('message')
                   };
                   console.log(data);
-                  // You can integrate with your preferred email service here
                 }}
-                sx={{ mt: 4 }}
+                sx={{ 
+                  mt: 4,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 3,
+                  position: 'relative',
+                  '&:before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: -40,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '150px',
+                    height: '4px',
+                    background: 'linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.3), transparent)',
+                    borderRadius: '2px'
+                  }
+                }}
               >
                 <Box sx={{ 
                   display: 'grid',
                   gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                   gap: 3
                 }}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="name"
-                    label="Your Name"
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        '& fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.3)',
+                  <motion.div variants={formItemVariants}>
+                    <TextField
+                      required
+                      fullWidth
+                      name="name"
+                      label="Your Name"
+                      variant="outlined"
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(26, 32, 44, 0.4)',
+                          backdropFilter: 'blur(10px)',
+                          borderRadius: '12px',
+                          color: 'rgba(255, 255, 255, 0.9)',
+                          transition: 'all 0.3s ease',
+                          '& fieldset': {
+                            borderColor: 'rgba(74, 144, 226, 0.2)',
+                            transition: 'all 0.3s ease',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'rgba(74, 144, 226, 0.4)',
+                          },
+                          '&.Mui-focused': {
+                            boxShadow: '0 0 0 2px rgba(74, 144, 226, 0.2)',
+                            '& fieldset': {
+                              borderColor: '#4a90e2',
+                              borderWidth: '2px',
+                            }
+                          },
                         },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.5)',
+                        '& .MuiInputLabel-root': {
+                          color: 'rgba(74, 144, 226, 0.8)',
+                          '&.Mui-focused': {
+                            color: '#4a90e2',
+                          }
                         },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#4a90e2',
+                        '& .MuiInputBase-input': {
+                          padding: '16px',
+                        }
+                      }}
+                    />
+                  </motion.div>
+                  <motion.div variants={formItemVariants}>
+                    <TextField
+                      required
+                      fullWidth
+                      name="email"
+                      label="Your Email"
+                      type="email"
+                      variant="outlined"
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(26, 32, 44, 0.4)',
+                          backdropFilter: 'blur(10px)',
+                          borderRadius: '12px',
+                          color: 'rgba(255, 255, 255, 0.9)',
+                          transition: 'all 0.3s ease',
+                          '& fieldset': {
+                            borderColor: 'rgba(74, 144, 226, 0.2)',
+                            transition: 'all 0.3s ease',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'rgba(74, 144, 226, 0.4)',
+                          },
+                          '&.Mui-focused': {
+                            boxShadow: '0 0 0 2px rgba(74, 144, 226, 0.2)',
+                            '& fieldset': {
+                              borderColor: '#4a90e2',
+                              borderWidth: '2px',
+                            }
+                          },
                         },
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: 'rgba(74, 144, 226, 0.8)',
-                      },
-                    }}
-                  />
-                  <TextField
-                    required
-                    fullWidth
-                    name="email"
-                    label="Your Email"
-                    type="email"
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        '& fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.3)',
+                        '& .MuiInputLabel-root': {
+                          color: 'rgba(74, 144, 226, 0.8)',
+                          '&.Mui-focused': {
+                            color: '#4a90e2',
+                          }
                         },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.5)',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#4a90e2',
-                        },
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: 'rgba(74, 144, 226, 0.8)',
-                      },
-                    }}
-                  />
+                        '& .MuiInputBase-input': {
+                          padding: '16px',
+                        }
+                      }}
+                    />
+                  </motion.div>
                 </Box>
-                <Box sx={{ mt: 3 }}>
+                <motion.div variants={formItemVariants}>
                   <TextField
                     required
                     fullWidth
@@ -494,40 +557,69 @@ export default function Home() {
                     variant="outlined"
                     sx={{
                       '& .MuiOutlinedInput-root': {
-                        color: 'rgba(255, 255, 255, 0.8)',
+                        background: 'rgba(26, 32, 44, 0.4)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '12px',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        transition: 'all 0.3s ease',
                         '& fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.3)',
+                          borderColor: 'rgba(74, 144, 226, 0.2)',
+                          transition: 'all 0.3s ease',
                         },
                         '&:hover fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.5)',
+                          borderColor: 'rgba(74, 144, 226, 0.4)',
                         },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#4a90e2',
+                        '&.Mui-focused': {
+                          boxShadow: '0 0 0 2px rgba(74, 144, 226, 0.2)',
+                          '& fieldset': {
+                            borderColor: '#4a90e2',
+                            borderWidth: '2px',
+                          }
                         },
                       },
                       '& .MuiInputLabel-root': {
                         color: 'rgba(74, 144, 226, 0.8)',
+                        '&.Mui-focused': {
+                          color: '#4a90e2',
+                        }
                       },
+                      '& .MuiInputBase-input': {
+                        padding: '16px',
+                      }
                     }}
                   />
-                </Box>
-                <Box sx={{ mt: 3 }}>
+                </motion.div>
+                <motion.div 
+                  variants={formItemVariants}
+                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                >
                   <Button
                     type="submit"
                     variant="contained"
                     endIcon={<SendIcon />}
                     sx={{
                       background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
+                      borderRadius: '12px',
                       px: 4,
                       py: 1.5,
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                      boxShadow: '0 4px 15px rgba(74, 144, 226, 0.2)',
+                      transition: 'all 0.3s ease',
                       '&:hover': {
                         background: 'linear-gradient(45deg, #2170b0, #4a90e2)',
+                        boxShadow: '0 6px 20px rgba(74, 144, 226, 0.3)',
+                        transform: 'translateY(-1px)'
+                      },
+                      '&:active': {
+                        transform: 'translateY(1px)'
                       }
                     }}
                   >
                     Send Message
                   </Button>
-                </Box>
+                </motion.div>
               </Box>
 
               <Box sx={{ 
