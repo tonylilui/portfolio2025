@@ -40,9 +40,7 @@ function MovingParticles() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={particlesCount}
-          array={positions}
-          itemSize={3}
+          args={[positions, 3]} // [array, itemSize]
         />
       </bufferGeometry>
       <pointsMaterial
@@ -58,7 +56,7 @@ function MovingParticles() {
 
 export function Scene({ scrollProgress, currentSection }: SceneProps) {
   return (
-    <div style={{ 
+    <div style={{
       position: 'fixed',
       top: 0,
       left: 0,
@@ -70,17 +68,17 @@ export function Scene({ scrollProgress, currentSection }: SceneProps) {
       <Canvas>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <ambientLight intensity={0.2} />
-        <spotLight 
-          position={[10, 10, 10]} 
-          angle={0.15} 
-          penumbra={1} 
+        <spotLight
+          position={[10, 10, 10]}
+          angle={0.15}
+          penumbra={1}
           intensity={0.8}
           color="#4a90e2"
         />
-        <pointLight 
-          position={[-10, -10, -10]} 
+        <pointLight
+          position={[-10, -10, -10]}
           intensity={0.3}
-          color="#64b5f6" 
+          color="#64b5f6"
         />
         <Stars
           radius={100}

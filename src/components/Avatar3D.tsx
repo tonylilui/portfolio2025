@@ -10,7 +10,7 @@ interface Avatar3DProps {
 
 export function Avatar3D({ scrollProgress, currentSection }: Avatar3DProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF('/src/assets/models/avatar.glb');
+  const { scene } = useGLTF('/avatar.glb');
   const targetRotation = useRef({ x: 0, y: 0, z: 0 });
   const targetPosition = useRef({ x: 0, y: 0, z: 0 });
   const targetScale = useRef(1);
@@ -62,7 +62,7 @@ export function Avatar3D({ scrollProgress, currentSection }: Avatar3DProps) {
   });
 
   return (
-    <primitive 
+    <primitive
       ref={groupRef}
       object={scene}
       scale={0.5} // You may need to adjust this value based on your model's size
