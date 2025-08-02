@@ -47,12 +47,12 @@ const formItemVariants = {
 
 const projectData = [
   {
-    title: 'AI-Powered Code Assistant',
-    description: 'A VS Code extension leveraging machine learning to provide intelligent code suggestions and auto-completions.',
-    tech: ['TypeScript', 'React', 'Python', 'TensorFlow'],
+    title: 'NailTech',
+    description: 'A modern nail appointment booking website for various designs',
+    tech: ['TypeScript', 'React'],
     image: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
-    github: 'https://github.com/yourusername/code-assistant',
-    demo: 'https://marketplace.visualstudio.com'
+    github: 'https://github.com/tonylilui/nailtech',
+    demo: 'https://nailtech-chi.vercel.app/'
   },
   {
     title: '3D Portfolio Website',
@@ -86,7 +86,7 @@ export default function Home() {
     message: '',
     severity: 'success' as 'success' | 'error'
   });
-  
+
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
 
   useEffect(() => {
@@ -120,12 +120,12 @@ export default function Home() {
           <Paper
             component={motion.div}
             variants={itemVariants}
-            whileHover={{ 
+            whileHover={{
               scale: 1.02,
               transition: { type: "spring", stiffness: 400, damping: 10 }
             }}
-            sx={{ 
-              p: 6, 
+            sx={{
+              p: 6,
               width: '100%',
               background: 'rgba(26, 32, 44, 0.4)',
               backdropFilter: 'blur(10px)',
@@ -146,10 +146,10 @@ export default function Home() {
             }}
           >
             <motion.div variants={itemVariants}>
-              <Typography 
-                variant="h2" 
+              <Typography
+                variant="h2"
                 gutterBottom
-                sx={{ 
+                sx={{
                   background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
@@ -178,12 +178,12 @@ export default function Home() {
           <Paper
             component={motion.div}
             variants={itemVariants}
-            whileHover={{ 
+            whileHover={{
               scale: 1.02,
               transition: { type: "spring", stiffness: 400, damping: 10 }
             }}
-            sx={{ 
-              p: 6, 
+            sx={{
+              p: 6,
               width: '100%',
               background: 'rgba(26, 32, 44, 0.4)',
               backdropFilter: 'blur(10px)',
@@ -204,10 +204,10 @@ export default function Home() {
             }}
           >
             <motion.div variants={itemVariants}>
-              <Typography 
-                variant="h3" 
+              <Typography
+                variant="h3"
                 gutterBottom
-                sx={{ 
+                sx={{
                   background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
@@ -236,12 +236,12 @@ export default function Home() {
           <Paper
             component={motion.div}
             variants={itemVariants}
-            whileHover={{ 
+            whileHover={{
               scale: 1.02,
               transition: { type: "spring", stiffness: 400, damping: 10 }
             }}
-            sx={{ 
-              p: 6, 
+            sx={{
+              p: 6,
               width: '100%',
               background: 'rgba(26, 32, 44, 0.4)',
               backdropFilter: 'blur(10px)',
@@ -253,10 +253,10 @@ export default function Home() {
             }}
           >
             <motion.div variants={itemVariants}>
-              <Typography 
-                variant="h3" 
+              <Typography
+                variant="h3"
                 gutterBottom
-                sx={{ 
+                sx={{
                   background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
@@ -270,9 +270,9 @@ export default function Home() {
               <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
                 Check out some of my best work as you scroll through this interactive portfolio.
               </Typography>
-              
-              <Box sx={{ 
-                display: 'grid', 
+
+              <Box sx={{
+                display: 'grid',
                 gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                 gap: 4,
                 mt: 4
@@ -281,7 +281,7 @@ export default function Home() {
                   <motion.div
                     key={project.title}
                     variants={itemVariants}
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.02,
                       transition: { type: "spring", stiffness: 400, damping: 10 }
                     }}
@@ -306,17 +306,17 @@ export default function Home() {
                         }
                       }}
                     >
-                      <Box sx={{ 
+                      <Box sx={{
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100%',
                         p: 3
                       }}>
-                        <Typography 
-                          variant="h5" 
+                        <Typography
+                          variant="h5"
                           gutterBottom
-                          sx={{ 
+                          sx={{
                             fontWeight: 'bold',
                             background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
                             backgroundClip: 'text',
@@ -327,16 +327,16 @@ export default function Home() {
                         >
                           {project.title}
                         </Typography>
-                        <Typography 
-                          variant="body1" 
+                        <Typography
+                          variant="body1"
                           paragraph
                           sx={{ color: 'rgba(255, 255, 255, 0.8)', flexGrow: 1 }}
                         >
                           {project.description}
                         </Typography>
-                        <Box sx={{ 
-                          display: 'flex', 
-                          flexWrap: 'wrap', 
+                        <Box sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
                           gap: 1,
                           mb: 2
                         }}>
@@ -357,7 +357,7 @@ export default function Home() {
                             </Typography>
                           ))}
                         </Box>
-                        <Box sx={{ 
+                        <Box sx={{
                           display: 'flex',
                           gap: 2,
                           mt: 'auto'
@@ -419,12 +419,12 @@ export default function Home() {
           <Paper
             component={motion.div}
             variants={itemVariants}
-            whileHover={{ 
+            whileHover={{
               scale: 1.02,
               transition: { type: "spring", stiffness: 400, damping: 10 }
             }}
-            sx={{ 
-              p: 6, 
+            sx={{
+              p: 6,
               width: '100%',
               background: 'rgba(26, 32, 44, 0.4)',
               backdropFilter: 'blur(10px)',
@@ -436,10 +436,10 @@ export default function Home() {
             }}
           >
             <motion.div variants={itemVariants}>
-              <Typography 
-                variant="h3" 
+              <Typography
+                variant="h3"
                 gutterBottom
-                sx={{ 
+                sx={{
                   background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
@@ -454,13 +454,13 @@ export default function Home() {
                 Interested in working together? Let's connect!
               </Typography>
 
-              <Box 
-                component="form" 
+              <Box
+                component="form"
                 onSubmit={async (e) => {
                   e.preventDefault();
                   const form = e.currentTarget as HTMLFormElement;
                   const formData = new FormData(form);
-                  
+
                   // Email validation
                   const email = formData.get('email') as string;
                   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -500,7 +500,7 @@ export default function Home() {
                     });
                   }
                 }}
-                sx={{ 
+                sx={{
                   mt: 4,
                   display: 'flex',
                   flexDirection: 'column',
@@ -519,7 +519,7 @@ export default function Home() {
                   }
                 }}
               >
-                <Box sx={{ 
+                <Box sx={{
                   display: 'grid',
                   gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                   gap: 3
@@ -651,7 +651,7 @@ export default function Home() {
                     }}
                   />
                 </motion.div>
-                <motion.div 
+                <motion.div
                   variants={formItemVariants}
                   style={{ display: 'flex', justifyContent: 'flex-end' }}
                 >
@@ -696,7 +696,7 @@ export default function Home() {
                   variant="filled"
                   sx={{
                     borderRadius: '12px',
-                    background: snackbar.severity === 'success' 
+                    background: snackbar.severity === 'success'
                       ? 'linear-gradient(45deg, #4CAF50, #81C784)'
                       : 'linear-gradient(45deg, #f44336, #e57373)',
                     boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
@@ -706,7 +706,7 @@ export default function Home() {
                 </Alert>
               </Snackbar>
 
-              <Box sx={{ 
+              <Box sx={{
                 mt: 6,
                 pt: 4,
                 borderTop: '1px solid rgba(74, 144, 226, 0.2)',
@@ -777,15 +777,15 @@ export default function Home() {
           </Paper>
         </motion.section>
       </Stack>
-      
+
       {/* Fixed Arrow Indicator */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ 
+        animate={{
           opacity: showScrollIndicator ? 1 : 0,
-          y: showScrollIndicator ? 0 : 20 
+          y: showScrollIndicator ? 0 : 20
         }}
-        transition={{ 
+        transition={{
           duration: 0.4,
           ease: "easeOut"
         }}
@@ -805,7 +805,7 @@ export default function Home() {
         onClick={scrollToNextSection}
       >
         <motion.div
-          animate={{ 
+          animate={{
             y: showScrollIndicator ? [0, 8, 0] : 0,
             opacity: showScrollIndicator ? [0.3, 1, 0.3] : 0,
           }}
@@ -821,15 +821,15 @@ export default function Home() {
             gap: '-12px'
           }}
         >
-          <KeyboardArrowDownIcon 
-            sx={{ 
+          <KeyboardArrowDownIcon
+            sx={{
               color: '#4a90e2',
               fontSize: '2.5rem',
               filter: 'drop-shadow(0 0 10px rgba(74, 144, 226, 0.4))',
             }}
           />
-          <KeyboardArrowDownIcon 
-            sx={{ 
+          <KeyboardArrowDownIcon
+            sx={{
               color: '#4a90e2',
               fontSize: '2.5rem',
               opacity: 0.7,
