@@ -576,15 +576,7 @@ export default function Home() {
                   {
                     icon: <GitHubIcon />,
                     href: 'https://github.com/tonylilui',
-                  },
-                  {
-                    icon: <LinkedInIcon />,
-                    href: 'https://linkedin.com/in/tonylilui',
-                  },
-                  {
-                    icon: <InstagramIcon />,
-                    href: 'https://www.instagram.com/tonystackofficial',
-                  },
+                  }
                 ].map((social) => (
                   <IconButton
                     key={social.href}
