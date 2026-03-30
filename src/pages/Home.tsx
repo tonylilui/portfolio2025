@@ -39,40 +39,44 @@ const stagger = {
 // ── Data ─────────────────────────────────────────────────────────────
 const projectData = [
   {
-    title: 'NailTech',
+    title: 'Secure Geo-Intelligence (GEOINT) Dashboard',
     description:
-      'A modern nail appointment booking website for various designs.',
-    tech: ['TypeScript', 'React'],
+      'A real-time situational awareness platform for monitoring maritime or aerial assets. Implements geofencing alerts and spatial data visualization for territorial security.',
+    tech: ['OpenLayers', 'Node.js', 'WebSockets', 'PostgreSQL'],
     gradient: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
-    github: 'https://github.com/tonylilui/nailtech',
-    demo: 'https://nailtech-chi.vercel.app/',
+    github: 'https://github.com/tonylilui/01-Secure-Geo-Intelligence-GEOINT-Dashboard',
+    demo: 'https://your-geoint-demo.com',
+    focus: 'Spatial Interest / Real-time Monitoring',
   },
   {
-    title: '3D Portfolio Website',
+    title: 'Air-Gapped Sovereign AI Pipeline',
     description:
-      'An interactive portfolio with Three.js, custom 3D animations and effects.',
-    tech: ['React', 'Three.js', 'TypeScript', 'Framer Motion'],
+      'A private Retrieval-Augmented Generation (RAG) system designed for Protected-B document analysis. Operates entirely on-premises with no external API dependencies.',
+    tech: ['Ollama', 'Llama 3', 'Python', 'ChromaDB', 'LangChain'],
     gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)',
-    github: 'https://github.com/yourusername/portfolio',
-    demo: 'https://yourportfolio.com',
+    github: 'https://github.com/tonylilui/02-Air-Gapped-Sovereign-AI-Pipeline',
+    demo: 'https://your-sovereignai-demo.com',
+    focus: 'Data Sovereignty / AI Security',
   },
   {
-    title: 'E-commerce Platform',
+    title: 'Zero-Trust File Integrity Monitor (FIM)',
     description:
-      'Full-stack e-commerce with real-time inventory management and payments.',
-    tech: ['Next.js', 'Node.js', 'MongoDB', 'Stripe'],
+      'A high-performance security tool that cryptographically verifies system files in real-time. Detects unauthorized tampering and triggers automated incident response alerts.',
+    tech: ['Go', 'gRPC', 'SHA-256', 'Linux System Calls', 'React'],
     gradient: 'linear-gradient(135deg, #7F7FD5 0%, #86A8E7 50%, #91EAE4 100%)',
-    github: 'https://github.com/yourusername/ecommerce',
-    demo: 'https://yourecommerce.com',
+    github: 'https://github.com/tonylilui/03-Zero-Trust-File-Integrity-Monitor-FIM-',
+    demo: 'https://your-fim-demo.com',
+    focus: 'Cyber Defence / Cryptography',
   },
   {
-    title: 'Blockchain Explorer',
+    title: 'Automated Infrastructure Hardening (IaC)',
     description:
-      'Explore and analyze blockchain transactions with real-time updates.',
-    tech: ['React', 'Web3.js', 'Node.js', 'PostgreSQL'],
+      'Infrastructure-as-Code pipeline to deploy STIG-compliant Linux environments. Automates security patching, firewall configuration, and auditing for federal compliance.',
+    tech: ['Ansible', 'Terraform', 'Docker', 'Bash', 'RHEL/Ubuntu'],
     gradient: 'linear-gradient(135deg, #654ea3 0%, #eaafc8 100%)',
-    github: 'https://github.com/yourusername/blockchain-explorer',
-    demo: 'https://yourexplorer.com',
+    github: 'https://github.com/tonylilui/04-Automated-Infrastructure-Hardening-IaC-',
+    demo: 'https://your-iac-demo.com',
+    focus: 'DevSecOps / Government Compliance',
   },
 ];
 
