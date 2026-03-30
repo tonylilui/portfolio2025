@@ -1,8 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import {
   Box,
-  AppBar,
-  Toolbar,
   Typography,
   IconButton,
   useTheme,
@@ -13,10 +11,10 @@ import {
   ListItemText,
   ListItemButton,
   ListItemIcon,
-  Divider
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
@@ -27,12 +25,11 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const DRAWER_WIDTH = 240;
 const NAV_ITEMS = [
   { text: 'Home', icon: <HomeIcon />, path: 'home' },
   { text: 'About', icon: <PersonIcon />, path: 'about' },
   { text: 'Projects', icon: <WorkIcon />, path: 'projects' },
-  { text: 'Contact', icon: <ContactMailIcon />, path: 'contact' }
+  { text: 'Contact', icon: <ContactMailIcon />, path: 'contact' },
 ];
 
 export default function Layout({ children }: LayoutProps) {
@@ -41,35 +38,29 @@ export default function Layout({ children }: LayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentSection, setCurrentSection] = useState('home');
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = NAV_ITEMS.map(item => document.getElementById(item.path));
-      const viewportHeight = window.innerHeight;
       const scrollPosition = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const totalHeight = document.documentElement.scrollHeight - viewportHeight;
+      const progress = totalHeight > 0 ? Math.max(0, Math.min(1, scrollPosition / totalHeight)) : 0;
+      setScrollProgress(progress);
+      setScrolled(scrollPosition > 50);
 
       // Find current section
-      let activeSection = sections[0];
-      let minDistance = Infinity;
-
-      sections.forEach((section) => {
+      const sections = NAV_ITEMS.map((item) => document.getElementById(item.path));
+      let active = 'home';
+      for (const section of sections) {
         if (section) {
-          const distance = Math.abs(section.offsetTop - scrollPosition);
-          if (distance < minDistance) {
-            minDistance = distance;
-            activeSection = section;
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= viewportHeight / 3) {
+            active = section.id;
           }
         }
-      });
-
-      if (activeSection) {
-        setCurrentSection(activeSection.id);
       }
-
-      // Calculate overall scroll progress
-      const totalHeight = document.documentElement.scrollHeight - viewportHeight;
-      const progress = Math.max(0, Math.min(1, scrollPosition / totalHeight));
-      setScrollProgress(progress);
+      setCurrentSection(active);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -77,212 +68,205 @@ export default function Layout({ children }: LayoutProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   const handleNavigation = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
-      const offset = section.offsetTop;
-      window.scrollTo({
-        top: offset,
-        behavior: 'smooth'
-      });
+      section.scrollIntoView({ behavior: 'smooth' });
     }
-    if (isMobile) {
-      setMobileOpen(false);
-    }
+    setMobileOpen(false);
   };
-
-  const drawer = (
-    <Box>
-      <Toolbar />
-      <Divider />
-      <List>
-        {NAV_ITEMS.map((item) => (
-          <motion.div
-            key={item.text}
-            whileHover={{ scale: 1.02, x: 5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <ListItem disablePadding>
-              <ListItemButton 
-                selected={currentSection === item.path}
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  borderRadius: '8px',
-                  mx: 1,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(74, 144, 226, 0.1)',
-                    '&:before': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: '4px',
-                      backgroundColor: '#4a90e2',
-                      borderRadius: '0 2px 2px 0'
-                    }
-                  }
-                }}
-              >
-                <ListItemIcon sx={{ 
-                  color: currentSection === item.path ? '#4a90e2' : 'inherit',
-                  transition: 'color 0.3s ease'
-                }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText 
-                  primary={item.text}
-                  sx={{ 
-                    color: currentSection === item.path ? '#4a90e2' : 'inherit',
-                    transition: 'color 0.3s ease'
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          </motion.div>
-        ))}
-      </List>
-    </Box>
-  );
 
   return (
     <Box sx={{ position: 'relative' }}>
       <Scene scrollProgress={scrollProgress} currentSection={currentSection} />
-      
-      <Box sx={{ position: 'relative', zIndex: 1 }}>
-        <AppBar 
-          position="fixed" 
-          elevation={0}
-          sx={{ 
-            zIndex: theme.zIndex.drawer + 1,
-            background: 'rgba(26, 32, 44, 0.8)',
-            backdropFilter: 'blur(10px)',
-            borderBottom: '1px solid rgba(74, 144, 226, 0.1)'
-          }}
-        >
-          <Toolbar>
-            {isMobile && (
-              <IconButton
-                color="inherit"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-start' }}>
-              <Typography 
-                variant="h6" 
-                component={motion.div}
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                animate={{ 
-                  opacity: 1,
-                  y: 0
-                }}
-                initial={{
-                  opacity: 0,
-                  y: 0
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: "easeOut"
-                }}
-                sx={{ 
-                  background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 'bold',
-                  transformOrigin: 'center center',
-                  cursor: 'pointer'
-                }}
-                whileHover={{ 
-                  scale: 1.05,
-                  transition: { type: "spring", stiffness: 400, damping: 10 }
-                }}
-              >
-                TonyStack
-              </Typography>
-            </Box>
-          </Toolbar>
-          
-          <motion.div
-            style={{
-              height: '2px',
-              background: '#4a90e2',
-              transformOrigin: '0%',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0
-            }}
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: scrollProgress }}
-          />
-        </AppBar>
 
+      {/* Floating Navbar */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 16,
+          left: 0,
+          right: 0,
+          zIndex: 1300,
+          display: 'flex',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{
+          width: '90%',
+          maxWidth: 800,
+          pointerEvents: 'auto',
+        }}
+      >
         <Box
-          component="nav"
-          sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
-        >
-          <AnimatePresence>
-            {isMobile ? (
-              <Drawer
-                variant="temporary"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                ModalProps={{ keepMounted: true }}
-                sx={{
-                  '& .MuiDrawer-paper': { 
-                    boxSizing: 'border-box', 
-                    width: DRAWER_WIDTH,
-                    background: 'rgba(26, 32, 44, 0.95)',
-                    backdropFilter: 'blur(10px)',
-                    borderRight: '1px solid rgba(74, 144, 226, 0.1)'
-                  },
-                }}
-              >
-                {drawer}
-              </Drawer>
-            ) : (
-              <Drawer
-                variant="permanent"
-                sx={{
-                  '& .MuiDrawer-paper': { 
-                    boxSizing: 'border-box', 
-                    width: DRAWER_WIDTH,
-                    background: 'rgba(26, 32, 44, 0.95)',
-                    backdropFilter: 'blur(10px)',
-                    borderRight: '1px solid rgba(74, 144, 226, 0.1)'
-                  },
-                }}
-                open
-              >
-                {drawer}
-              </Drawer>
-            )}
-          </AnimatePresence>
-        </Box>
-
-        <Box
-          component="main"
           sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-            ml: { md: `${DRAWER_WIDTH}px` },
-            mt: '64px'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 3,
+            py: 1.5,
+            borderRadius: '16px',
+            background: scrolled
+              ? 'rgba(10, 15, 26, 0.85)'
+              : 'rgba(10, 15, 26, 0.4)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(96, 165, 250, 0.08)',
+            boxShadow: scrolled
+              ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+              : '0 4px 16px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease',
           }}
         >
-          {children}
+          <Typography
+            variant="h6"
+            onClick={() => handleNavigation('home')}
+            sx={{
+              background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              letterSpacing: '-0.02em',
+              userSelect: 'none',
+            }}
+          >
+            TonyStack
+          </Typography>
+
+          {/* Desktop nav links */}
+          {!isMobile && (
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              {NAV_ITEMS.map((item) => (
+                <Box
+                  key={item.text}
+                  component="button"
+                  onClick={() => handleNavigation(item.path)}
+                  sx={{
+                    background: currentSection === item.path
+                      ? 'rgba(96, 165, 250, 0.12)'
+                      : 'transparent',
+                    border: 'none',
+                    borderRadius: '10px',
+                    px: 2,
+                    py: 1,
+                    color: currentSection === item.path ? '#60a5fa' : '#94a3b8',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    fontFamily: 'inherit',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      color: '#e2e8f0',
+                      background: 'rgba(96, 165, 250, 0.08)',
+                    },
+                  }}
+                >
+                  {item.text}
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {/* Mobile hamburger */}
+          {isMobile && (
+            <IconButton
+              onClick={() => setMobileOpen(!mobileOpen)}
+              sx={{ color: '#60a5fa' }}
+            >
+              {mobileOpen ? <CloseIcon /> : <MenuIcon />}
+            </IconButton>
+          )}
         </Box>
+
+        {/* Scroll progress bar */}
+        <motion.div
+          style={{
+            height: 2,
+            background: 'linear-gradient(90deg, #60a5fa, #a78bfa)',
+            borderRadius: '0 0 16px 16px',
+            transformOrigin: '0%',
+            scaleX: scrollProgress,
+            marginTop: -1,
+          }}
+        />
+      </motion.header>
+      </Box>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isMobile && (
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={() => setMobileOpen(false)}
+            ModalProps={{ keepMounted: true }}
+            sx={{
+              '& .MuiDrawer-paper': {
+                width: 260,
+                background: 'rgba(10, 15, 26, 0.95)',
+                backdropFilter: 'blur(20px)',
+                borderRight: '1px solid rgba(96, 165, 250, 0.08)',
+                pt: 10,
+              },
+            }}
+          >
+            <List>
+              {NAV_ITEMS.map((item) => (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton
+                    selected={currentSection === item.path}
+                    onClick={() => handleNavigation(item.path)}
+                    sx={{
+                      borderRadius: '10px',
+                      mx: 1.5,
+                      my: 0.5,
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        color: currentSection === item.path ? '#60a5fa' : '#64748b',
+                        minWidth: 40,
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        '& .MuiListItemText-primary': {
+                          color: currentSection === item.path ? '#60a5fa' : '#94a3b8',
+                          fontWeight: currentSection === item.path ? 600 : 400,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Drawer>
+        )}
+      </AnimatePresence>
+
+      {/* Main Content */}
+      <Box
+        component="main"
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          minHeight: '100vh',
+        }}
+      >
+        {children}
       </Box>
     </Box>
   );

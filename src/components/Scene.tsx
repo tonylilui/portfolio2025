@@ -9,45 +9,40 @@ interface SceneProps {
   currentSection: string;
 }
 
-function MovingParticles() {
-  const particlesCount = 1000;
+function FloatingParticles() {
+  const count = 500;
   const positions = useMemo(() => {
-    const pos = new Float32Array(particlesCount * 3);
-    for (let i = 0; i < particlesCount; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 50;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 50;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 50;
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
     }
     return pos;
   }, []);
 
-  const particlesRef = useRef<THREE.Points>(null);
+  const ref = useRef<THREE.Points>(null);
 
   useFrame((state) => {
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < particlesCount; i++) {
-        const i3 = i * 3;
-        positions[i3 + 1] += Math.sin(state.clock.elapsedTime + i) * 0.01;
-      }
-      particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    if (!ref.current) return;
+    ref.current.rotation.y = state.clock.elapsedTime * 0.02;
+    const arr = ref.current.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < count; i++) {
+      arr[i * 3 + 1] += Math.sin(state.clock.elapsedTime * 0.5 + i * 0.1) * 0.002;
     }
+    ref.current.geometry.attributes.position.needsUpdate = true;
   });
 
   return (
-    <points ref={particlesRef}>
+    <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]} // [array, itemSize]
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
-        color="#4a90e2"
+        size={0.04}
+        color="#60a5fa"
         transparent
-        opacity={0.6}
+        opacity={0.35}
         sizeAttenuation
       />
     </points>
@@ -56,41 +51,39 @@ function MovingParticles() {
 
 export function Scene({ scrollProgress, currentSection }: SceneProps) {
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100vh',
-      pointerEvents: 'none',
-      background: 'radial-gradient(circle at 50% 50%, #1a2744 0%, #0a192f 100%)'
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100vh',
+        pointerEvents: 'none',
+        background: 'radial-gradient(ellipse at 50% 30%, #0f172a 0%, #0a0f1a 70%)',
+      }}
+    >
       <Canvas>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-        <ambientLight intensity={0.2} />
+        <ambientLight intensity={0.25} />
         <spotLight
-          position={[10, 10, 10]}
-          angle={0.15}
+          position={[8, 8, 8]}
+          angle={0.2}
           penumbra={1}
-          intensity={0.8}
-          color="#4a90e2"
+          intensity={0.6}
+          color="#60a5fa"
         />
-        <pointLight
-          position={[-10, -10, -10]}
-          intensity={0.3}
-          color="#64b5f6"
-        />
+        <pointLight position={[-8, -6, -8]} intensity={0.2} color="#a78bfa" />
         <Stars
-          radius={100}
+          radius={80}
           depth={50}
-          count={5000}
-          factor={4}
+          count={3000}
+          factor={3}
           saturation={0}
           fade
-          speed={1}
+          speed={0.5}
         />
-        <MovingParticles />
-        <fog attach="fog" args={['#0a192f', 8, 25]} />
+        <FloatingParticles />
+        <fog attach="fog" args={['#0a0f1a', 10, 30]} />
         <Avatar3D scrollProgress={scrollProgress} currentSection={currentSection} />
       </Canvas>
     </div>

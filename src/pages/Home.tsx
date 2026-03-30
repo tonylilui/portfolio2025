@@ -1,4 +1,16 @@
-import { Typography, Paper, Stack, Box, Container, Button, Link, TextField, IconButton, Snackbar, Alert } from '@mui/material';
+import {
+  Typography,
+  Paper,
+  Box,
+  Container,
+  Button,
+  Link,
+  TextField,
+  IconButton,
+  Snackbar,
+  Alert,
+  Chip,
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -9,850 +21,698 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import emailjs from '@emailjs/browser';
 import { useState, useEffect } from 'react';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
+// ── Animation variants ──────────────────────────────────────────────
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i: number) => ({
     opacity: 1,
-    transition: {
-      staggerChildren: 0.3
-    }
-  }
-} as const;
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
     y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 10
-    }
-  }
-} as const;
+    transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+  }),
+};
 
-const formItemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 10
-    }
-  }
-} as const;
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
 
+// ── Data ─────────────────────────────────────────────────────────────
 const projectData = [
   {
     title: 'NailTech',
-    description: 'A modern nail appointment booking website for various designs',
+    description:
+      'A modern nail appointment booking website for various designs.',
     tech: ['TypeScript', 'React'],
-    image: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
+    gradient: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
     github: 'https://github.com/tonylilui/nailtech',
-    demo: 'https://nailtech-chi.vercel.app/'
+    demo: 'https://nailtech-chi.vercel.app/',
   },
   {
     title: '3D Portfolio Website',
-    description: 'An interactive portfolio website built with Three.js and React, featuring custom 3D animations and effects.',
+    description:
+      'An interactive portfolio with Three.js, custom 3D animations and effects.',
     tech: ['React', 'Three.js', 'TypeScript', 'Framer Motion'],
-    image: 'linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)',
+    gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%)',
     github: 'https://github.com/yourusername/portfolio',
-    demo: 'https://yourportfolio.com'
+    demo: 'https://yourportfolio.com',
   },
   {
     title: 'E-commerce Platform',
-    description: 'A full-stack e-commerce solution with real-time inventory management and payment processing.',
+    description:
+      'Full-stack e-commerce with real-time inventory management and payments.',
     tech: ['Next.js', 'Node.js', 'MongoDB', 'Stripe'],
-    image: 'linear-gradient(135deg, #7F7FD5 0%, #86A8E7 50%, #91EAE4 100%)',
+    gradient: 'linear-gradient(135deg, #7F7FD5 0%, #86A8E7 50%, #91EAE4 100%)',
     github: 'https://github.com/yourusername/ecommerce',
-    demo: 'https://yourecommerce.com'
+    demo: 'https://yourecommerce.com',
   },
   {
     title: 'Blockchain Explorer',
-    description: 'A web application for exploring and analyzing blockchain transactions with real-time updates.',
+    description:
+      'Explore and analyze blockchain transactions with real-time updates.',
     tech: ['React', 'Web3.js', 'Node.js', 'PostgreSQL'],
-    image: 'linear-gradient(135deg, #654ea3 0%, #eaafc8 100%)',
+    gradient: 'linear-gradient(135deg, #654ea3 0%, #eaafc8 100%)',
     github: 'https://github.com/yourusername/blockchain-explorer',
-    demo: 'https://yourexplorer.com'
-  }
+    demo: 'https://yourexplorer.com',
+  },
 ];
 
+// ── Shared Styles ────────────────────────────────────────────────────
+const glassCard = {
+  background: 'rgba(15, 23, 42, 0.45)',
+  backdropFilter: 'blur(24px)',
+  borderRadius: '20px',
+  border: '1px solid rgba(96, 165, 250, 0.08)',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+};
+
+const inputSx = {
+  '& .MuiOutlinedInput-root': {
+    background: 'rgba(15, 23, 42, 0.4)',
+    borderRadius: '12px',
+    color: '#e2e8f0',
+    transition: 'all 0.2s ease',
+    '& fieldset': { borderColor: 'rgba(96, 165, 250, 0.12)' },
+    '&:hover fieldset': { borderColor: 'rgba(96, 165, 250, 0.3)' },
+    '&.Mui-focused': {
+      boxShadow: '0 0 0 2px rgba(96, 165, 250, 0.15)',
+      '& fieldset': { borderColor: '#60a5fa', borderWidth: '2px' },
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(148, 163, 184, 0.7)',
+    '&.Mui-focused': { color: '#60a5fa' },
+  },
+};
+
+// ── Component ────────────────────────────────────────────────────────
 export default function Home() {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'success' as 'success' | 'error'
+    severity: 'success' as 'success' | 'error',
   });
-
-  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const [showScroll, setShowScroll] = useState(true);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setShowScrollIndicator(scrollPosition < 100);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handler = () => setShowScroll(window.scrollY < 100);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  const scrollToNextSection = () => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <Container maxWidth="lg" sx={{ position: 'relative' }}>
-      <Stack spacing={4}>
-        <motion.section
-          id="home"
+    <Container maxWidth="md" sx={{ px: { xs: 2, sm: 4 } }}>
+      {/* ═══════════ HERO ═══════════ */}
+      <Box
+        component="section"
+        id="home"
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          pt: { xs: 12, md: 0 },
+        }}
+      >
+        <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
+          viewport={{ once: true }}
+          variants={stagger}
         >
-          <Paper
-            component={motion.div}
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { type: "spring", stiffness: 400, damping: 10 }
-            }}
-            sx={{
-              p: 6,
-              width: '100%',
-              background: 'rgba(26, 32, 44, 0.4)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(74, 144, 226, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
-              position: 'relative',
-              '&:before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.3), transparent)'
-              }
-            }}
-          >
-            <motion.div variants={itemVariants}>
-              <Typography
-                variant="h2"
-                gutterBottom
+          <motion.div custom={0} variants={fadeUp}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#60a5fa',
+                fontWeight: 600,
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                mb: 2,
+                fontSize: '0.8rem',
+              }}
+            >
+              Hi, my name is
+            </Typography>
+          </motion.div>
+
+          <motion.div custom={1} variants={fadeUp}>
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
+                fontWeight: 800,
+                lineHeight: 1.1,
+                background: 'linear-gradient(135deg, #e2e8f0, #60a5fa)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                mb: 1,
+              }}
+            >
+              Tony Li.
+            </Typography>
+          </motion.div>
+
+          <motion.div custom={2} variants={fadeUp}>
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3.2rem' },
+                fontWeight: 700,
+                lineHeight: 1.15,
+                color: '#64748b',
+                mb: 3,
+              }}
+            >
+              I build things for the web.
+            </Typography>
+          </motion.div>
+
+          <motion.div custom={3} variants={fadeUp}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: '#94a3b8',
+                maxWidth: 520,
+                fontSize: '1.05rem',
+                lineHeight: 1.8,
+                mb: 4,
+              }}
+            >
+              I like to build cool stuff. Currently looking for internship
+              opportunities where I can grow and contribute.
+            </Typography>
+          </motion.div>
+
+          <motion.div custom={4} variants={fadeUp}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  document
+                    .getElementById('projects')
+                    ?.scrollIntoView({ behavior: 'smooth' })
+                }
                 sx={{
-                  background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 'bold',
-                  mb: 4
+                  borderColor: 'rgba(96, 165, 250, 0.4)',
+                  color: '#60a5fa',
+                  borderRadius: '12px',
+                  px: 3,
+                  py: 1.2,
+                  fontSize: '0.95rem',
+                  '&:hover': {
+                    borderColor: '#60a5fa',
+                    background: 'rgba(96, 165, 250, 0.08)',
+                  },
                 }}
               >
-                Welcome to My Portfolio
-              </Typography>
-              <Typography variant="h5" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
-                Scroll down to explore my work and experience.
-              </Typography>
-            </motion.div>
-          </Paper>
-        </motion.section>
-
-        <motion.section
-          id="about"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
-        >
-          <Paper
-            component={motion.div}
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { type: "spring", stiffness: 400, damping: 10 }
-            }}
-            sx={{
-              p: 6,
-              width: '100%',
-              background: 'rgba(26, 32, 44, 0.4)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(74, 144, 226, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
-              position: 'relative',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.3), transparent)'
-              }
-            }}
-          >
-            <motion.div variants={itemVariants}>
-              <Typography
-                variant="h3"
-                gutterBottom
+                View My Work
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  document
+                    .getElementById('contact')
+                    ?.scrollIntoView({ behavior: 'smooth' })
+                }
                 sx={{
-                  background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 'bold',
-                  mb: 4
-                }}
-              >
-                About Me
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
-                I like to build cool stuff. Open to internship opportunities!
-              </Typography>
-            </motion.div>
-          </Paper>
-        </motion.section>
-
-        <motion.section
-          id="projects"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
-        >
-          <Paper
-            component={motion.div}
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { type: "spring", stiffness: 400, damping: 10 }
-            }}
-            sx={{
-              p: 6,
-              width: '100%',
-              background: 'rgba(26, 32, 44, 0.4)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(74, 144, 226, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
-              position: 'relative'
-            }}
-          >
-            <motion.div variants={itemVariants}>
-              <Typography
-                variant="h3"
-                gutterBottom
-                sx={{
-                  background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 'bold',
-                  mb: 4
-                }}
-              >
-                Featured Projects
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
-                Check out some of my best work as you scroll through this interactive portfolio.
-              </Typography>
-
-              <Box sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                gap: 4,
-                mt: 4
-              }}>
-                {projectData.map((project) => (
-                  <motion.div
-                    key={project.title}
-                    variants={itemVariants}
-                    whileHover={{
-                      scale: 1.02,
-                      transition: { type: "spring", stiffness: 400, damping: 10 }
-                    }}
-                    style={{ height: '100%' }}
-                  >
-                    <Paper
-                      sx={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&:before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: '120px',
-                          background: project.image,
-                          opacity: 0.2
-                        }
-                      }}
-                    >
-                      <Box sx={{
-                        position: 'relative',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                        p: 3
-                      }}>
-                        <Typography
-                          variant="h5"
-                          gutterBottom
-                          sx={{
-                            fontWeight: 'bold',
-                            background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                            backgroundClip: 'text',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            mt: 7
-                          }}
-                        >
-                          {project.title}
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          paragraph
-                          sx={{ color: 'rgba(255, 255, 255, 0.8)', flexGrow: 1 }}
-                        >
-                          {project.description}
-                        </Typography>
-                        <Box sx={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: 1,
-                          mb: 2
-                        }}>
-                          {project.tech.map((tech) => (
-                            <Typography
-                              key={tech}
-                              sx={{
-                                px: 1.5,
-                                py: 0.5,
-                                borderRadius: '4px',
-                                fontSize: '0.75rem',
-                                background: 'rgba(74, 144, 226, 0.1)',
-                                border: '1px solid rgba(74, 144, 226, 0.2)',
-                                color: '#4a90e2'
-                              }}
-                            >
-                              {tech}
-                            </Typography>
-                          ))}
-                        </Box>
-                        <Box sx={{
-                          display: 'flex',
-                          gap: 2,
-                          mt: 'auto'
-                        }}>
-                          <Button
-                            component={Link}
-                            href={project.github}
-                            target="_blank"
-                            startIcon={<GitHubIcon />}
-                            variant="outlined"
-                            size="small"
-                            sx={{
-                              borderColor: 'rgba(74, 144, 226, 0.5)',
-                              color: '#4a90e2',
-                              '&:hover': {
-                                borderColor: '#4a90e2',
-                                background: 'rgba(74, 144, 226, 0.1)'
-                              }
-                            }}
-                          >
-                            Code
-                          </Button>
-                          <Button
-                            component={Link}
-                            href={project.demo}
-                            target="_blank"
-                            startIcon={<LaunchIcon />}
-                            variant="outlined"
-                            size="small"
-                            sx={{
-                              borderColor: 'rgba(74, 144, 226, 0.5)',
-                              color: '#4a90e2',
-                              '&:hover': {
-                                borderColor: '#4a90e2',
-                                background: 'rgba(74, 144, 226, 0.1)'
-                              }
-                            }}
-                          >
-                            Live Demo
-                          </Button>
-                        </Box>
-                      </Box>
-                    </Paper>
-                  </motion.div>
-                ))}
-              </Box>
-            </motion.div>
-          </Paper>
-        </motion.section>
-
-        <motion.section
-          id="contact"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
-        >
-          <Paper
-            component={motion.div}
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.02,
-              transition: { type: "spring", stiffness: 400, damping: 10 }
-            }}
-            sx={{
-              p: 6,
-              width: '100%',
-              background: 'rgba(26, 32, 44, 0.4)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(74, 144, 226, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-              overflow: 'hidden',
-              position: 'relative'
-            }}
-          >
-            <motion.div variants={itemVariants}>
-              <Typography
-                variant="h3"
-                gutterBottom
-                sx={{
-                  background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 'bold',
-                  mb: 4
+                  borderColor: 'rgba(96, 165, 250, 0.2)',
+                  color: '#94a3b8',
+                  borderRadius: '12px',
+                  px: 3,
+                  py: 1.2,
+                  fontSize: '0.95rem',
+                  '&:hover': {
+                    borderColor: 'rgba(96, 165, 250, 0.4)',
+                    color: '#e2e8f0',
+                    background: 'rgba(96, 165, 250, 0.05)',
+                  },
                 }}
               >
                 Get in Touch
-              </Typography>
-              <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }} paragraph>
-                Interested in working together? Let's connect!
-              </Typography>
+              </Button>
+            </Box>
+          </motion.div>
+        </motion.div>
+      </Box>
 
-              <Box
-                component="form"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const form = e.currentTarget as HTMLFormElement;
-                  const formData = new FormData(form);
+      {/* ═══════════ ABOUT ═══════════ */}
+      <Box
+        component="section"
+        id="about"
+        sx={{ py: { xs: 10, md: 16 } }}
+      >
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={stagger}
+        >
+          <motion.div custom={0} variants={fadeUp}>
+            <SectionHeading number="01" title="About Me" />
+          </motion.div>
 
-                  // Email validation
-                  const email = formData.get('email') as string;
-                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                  if (!emailRegex.test(email)) {
-                    setSnackbar({
-                      open: true,
-                      message: 'Please enter a valid email address',
-                      severity: 'error'
-                    });
-                    return;
-                  }
+          <Paper
+            component={motion.div}
+            custom={1}
+            variants={fadeUp}
+            sx={{ ...glassCard, p: { xs: 4, md: 6 } }}
+          >
+            <Typography
+              variant="body1"
+              sx={{ color: '#94a3b8', fontSize: '1.05rem', lineHeight: 1.8 }}
+            >
+              I like to build cool stuff. I'm passionate about creating
+              beautiful, performant web experiences with modern technologies.
+              Currently open to internship opportunities where I can learn, grow,
+              and make an impact.
+            </Typography>
+          </Paper>
+        </motion.div>
+      </Box>
 
-                  try {
-                    await emailjs.send(
-                      'template_contact',
-                      'template_1kjdm94',
-                      {
-                        from_name: formData.get('name'),
-                        from_email: email,
-                        message: formData.get('message'),
-                        to_email: 'tony.lilui@live.com',
-                      },
-                      'q70Fxa0fZZECYPrQg'
-                    );
-                    setSnackbar({
-                      open: true,
-                      message: 'Message sent successfully! I\'ll get back to you soon.',
-                      severity: 'success'
-                    });
-                    form.reset();
-                  } catch (error) {
-                    console.error('Failed to send email:', error);
-                    setSnackbar({
-                      open: true,
-                      message: 'Failed to send message. Please try again later.',
-                      severity: 'error'
-                    });
-                  }
-                }}
-                sx={{
-                  mt: 4,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 3,
-                  position: 'relative',
-                  '&:before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: -40,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '150px',
-                    height: '4px',
-                    background: 'linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.3), transparent)',
-                    borderRadius: '2px'
-                  }
-                }}
-              >
-                <Box sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                  gap: 3
-                }}>
-                  <motion.div variants={formItemVariants}>
-                    <TextField
-                      required
-                      fullWidth
-                      name="name"
-                      label="Your Name"
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          background: 'rgba(26, 32, 44, 0.4)',
-                          backdropFilter: 'blur(10px)',
-                          borderRadius: '12px',
-                          color: 'rgba(255, 255, 255, 0.9)',
-                          transition: 'all 0.3s ease',
-                          '& fieldset': {
-                            borderColor: 'rgba(74, 144, 226, 0.2)',
-                            transition: 'all 0.3s ease',
-                          },
-                          '&:hover fieldset': {
-                            borderColor: 'rgba(74, 144, 226, 0.4)',
-                          },
-                          '&.Mui-focused': {
-                            boxShadow: '0 0 0 2px rgba(74, 144, 226, 0.2)',
-                            '& fieldset': {
-                              borderColor: '#4a90e2',
-                              borderWidth: '2px',
-                            }
-                          },
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: 'rgba(74, 144, 226, 0.8)',
-                          '&.Mui-focused': {
-                            color: '#4a90e2',
-                          }
-                        },
-                        '& .MuiInputBase-input': {
-                          padding: '16px',
-                        }
-                      }}
-                    />
-                  </motion.div>
-                  <motion.div variants={formItemVariants}>
-                    <TextField
-                      required
-                      fullWidth
-                      name="email"
-                      label="Your Email"
-                      type="email"
-                      variant="outlined"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          background: 'rgba(26, 32, 44, 0.4)',
-                          backdropFilter: 'blur(10px)',
-                          borderRadius: '12px',
-                          color: 'rgba(255, 255, 255, 0.9)',
-                          transition: 'all 0.3s ease',
-                          '& fieldset': {
-                            borderColor: 'rgba(74, 144, 226, 0.2)',
-                            transition: 'all 0.3s ease',
-                          },
-                          '&:hover fieldset': {
-                            borderColor: 'rgba(74, 144, 226, 0.4)',
-                          },
-                          '&.Mui-focused': {
-                            boxShadow: '0 0 0 2px rgba(74, 144, 226, 0.2)',
-                            '& fieldset': {
-                              borderColor: '#4a90e2',
-                              borderWidth: '2px',
-                            }
-                          },
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: 'rgba(74, 144, 226, 0.8)',
-                          '&.Mui-focused': {
-                            color: '#4a90e2',
-                          }
-                        },
-                        '& .MuiInputBase-input': {
-                          padding: '16px',
-                        }
-                      }}
-                    />
-                  </motion.div>
-                </Box>
-                <motion.div variants={formItemVariants}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="message"
-                    label="Your Message"
-                    multiline
-                    rows={4}
-                    variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        background: 'rgba(26, 32, 44, 0.4)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: '12px',
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        transition: 'all 0.3s ease',
-                        '& fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.2)',
-                          transition: 'all 0.3s ease',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(74, 144, 226, 0.4)',
-                        },
-                        '&.Mui-focused': {
-                          boxShadow: '0 0 0 2px rgba(74, 144, 226, 0.2)',
-                          '& fieldset': {
-                            borderColor: '#4a90e2',
-                            borderWidth: '2px',
-                          }
-                        },
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: 'rgba(74, 144, 226, 0.8)',
-                        '&.Mui-focused': {
-                          color: '#4a90e2',
-                        }
-                      },
-                      '& .MuiInputBase-input': {
-                        padding: '16px',
-                      }
-                    }}
-                  />
-                </motion.div>
-                <motion.div
-                  variants={formItemVariants}
-                  style={{ display: 'flex', justifyContent: 'flex-end' }}
-                >
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    endIcon={<SendIcon />}
-                    sx={{
-                      background: 'linear-gradient(45deg, #4a90e2, #64b5f6)',
-                      borderRadius: '12px',
-                      px: 4,
-                      py: 1.5,
-                      textTransform: 'none',
-                      fontSize: '1rem',
-                      fontWeight: 500,
-                      boxShadow: '0 4px 15px rgba(74, 144, 226, 0.2)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        background: 'linear-gradient(45deg, #2170b0, #4a90e2)',
-                        boxShadow: '0 6px 20px rgba(74, 144, 226, 0.3)',
-                        transform: 'translateY(-1px)'
-                      },
-                      '&:active': {
-                        transform: 'translateY(1px)'
-                      }
-                    }}
-                  >
-                    Send Message
-                  </Button>
-                </motion.div>
-              </Box>
+      {/* ═══════════ PROJECTS ═══════════ */}
+      <Box
+        component="section"
+        id="projects"
+        sx={{ py: { xs: 10, md: 16 } }}
+      >
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={stagger}
+        >
+          <motion.div custom={0} variants={fadeUp}>
+            <SectionHeading number="02" title="Featured Projects" />
+          </motion.div>
 
-              <Snackbar
-                open={snackbar.open}
-                autoHideDuration={6000}
-                onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-              >
-                <Alert
-                  onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-                  severity={snackbar.severity}
-                  variant="filled"
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+              gap: 3,
+            }}
+          >
+            {projectData.map((project, i) => (
+              <motion.div key={project.title} custom={i + 1} variants={fadeUp}>
+                <Paper
                   sx={{
-                    borderRadius: '12px',
-                    background: snackbar.severity === 'success'
-                      ? 'linear-gradient(45deg, #4CAF50, #81C784)'
-                      : 'linear-gradient(45deg, #f44336, #e57373)',
-                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                    ...glassCard,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 16px 48px rgba(0, 0, 0, 0.2)',
+                    },
                   }}
                 >
-                  {snackbar.message}
-                </Alert>
-              </Snackbar>
+                  {/* Gradient accent strip */}
+                  <Box
+                    sx={{
+                      height: 4,
+                      background: project.gradient,
+                      borderRadius: '20px 20px 0 0',
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      p: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flexGrow: 1,
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                        color: '#e2e8f0',
+                        mb: 1,
+                      }}
+                    >
+                      {project.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: '#94a3b8',
+                        lineHeight: 1.7,
+                        mb: 2,
+                        flexGrow: 1,
+                      }}
+                    >
+                      {project.description}
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8, mb: 2.5 }}>
+                      {project.tech.map((t) => (
+                        <Chip
+                          key={t}
+                          label={t}
+                          size="small"
+                          sx={{
+                            background: 'rgba(96, 165, 250, 0.08)',
+                            border: '1px solid rgba(96, 165, 250, 0.12)',
+                            color: '#60a5fa',
+                            fontSize: '0.72rem',
+                            fontWeight: 500,
+                            height: 26,
+                          }}
+                        />
+                      ))}
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1.5 }}>
+                      <Button
+                        component={Link}
+                        href={project.github}
+                        target="_blank"
+                        startIcon={<GitHubIcon sx={{ fontSize: '1rem !important' }} />}
+                        size="small"
+                        sx={{
+                          color: '#94a3b8',
+                          fontSize: '0.8rem',
+                          '&:hover': { color: '#e2e8f0' },
+                        }}
+                      >
+                        Code
+                      </Button>
+                      <Button
+                        component={Link}
+                        href={project.demo}
+                        target="_blank"
+                        startIcon={<LaunchIcon sx={{ fontSize: '1rem !important' }} />}
+                        size="small"
+                        sx={{
+                          color: '#94a3b8',
+                          fontSize: '0.8rem',
+                          '&:hover': { color: '#e2e8f0' },
+                        }}
+                      >
+                        Live Demo
+                      </Button>
+                    </Box>
+                  </Box>
+                </Paper>
+              </motion.div>
+            ))}
+          </Box>
+        </motion.div>
+      </Box>
 
-              <Box sx={{
-                mt: 6,
+      {/* ═══════════ CONTACT ═══════════ */}
+      <Box
+        component="section"
+        id="contact"
+        sx={{ py: { xs: 10, md: 16 }, pb: { xs: 12, md: 20 } }}
+      >
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={stagger}
+        >
+          <motion.div custom={0} variants={fadeUp}>
+            <SectionHeading number="03" title="Get in Touch" />
+          </motion.div>
+
+          <Paper
+            component={motion.div}
+            custom={1}
+            variants={fadeUp}
+            sx={{ ...glassCard, p: { xs: 4, md: 6 } }}
+          >
+            <Typography
+              variant="body1"
+              sx={{ color: '#94a3b8', mb: 4, fontSize: '1.05rem' }}
+            >
+              Have a question or want to work together? Send me a message!
+            </Typography>
+
+            <Box
+              component="form"
+              onSubmit={async (e: React.FormEvent<HTMLFormElement>) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const formData = new FormData(form);
+
+                const email = formData.get('email') as string;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                  setSnackbar({
+                    open: true,
+                    message: 'Please enter a valid email address',
+                    severity: 'error',
+                  });
+                  return;
+                }
+
+                try {
+                  await emailjs.send(
+                    'template_contact',
+                    'template_1kjdm94',
+                    {
+                      from_name: formData.get('name'),
+                      from_email: email,
+                      message: formData.get('message'),
+                      to_email: 'tony.lilui@live.com',
+                    },
+                    'q70Fxa0fZZECYPrQg'
+                  );
+                  setSnackbar({
+                    open: true,
+                    message: "Message sent successfully! I'll get back to you soon.",
+                    severity: 'success',
+                  });
+                  form.reset();
+                } catch (error) {
+                  console.error('Failed to send email:', error);
+                  setSnackbar({
+                    open: true,
+                    message: 'Failed to send message. Please try again later.',
+                    severity: 'error',
+                  });
+                }
+              }}
+              sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
+            >
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                  gap: 2.5,
+                }}
+              >
+                <TextField
+                  required
+                  fullWidth
+                  name="name"
+                  label="Your Name"
+                  sx={inputSx}
+                />
+                <TextField
+                  required
+                  fullWidth
+                  name="email"
+                  type="email"
+                  label="Your Email"
+                  sx={inputSx}
+                />
+              </Box>
+              <TextField
+                required
+                fullWidth
+                multiline
+                rows={4}
+                name="message"
+                label="Your Message"
+                sx={inputSx}
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  sx={{
+                    background: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+                    borderRadius: '12px',
+                    px: 4,
+                    py: 1.3,
+                    fontSize: '0.95rem',
+                    fontWeight: 600,
+                    boxShadow: '0 4px 20px rgba(96, 165, 250, 0.2)',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
+                      boxShadow: '0 6px 24px rgba(96, 165, 250, 0.3)',
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                >
+                  Send Message
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Social links */}
+            <Box
+              sx={{
+                mt: 5,
                 pt: 4,
-                borderTop: '1px solid rgba(74, 144, 226, 0.2)',
+                borderTop: '1px solid rgba(96, 165, 250, 0.08)',
                 display: 'flex',
                 flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 3
-              }}>
-                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                  Or connect with me on:
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                    <IconButton
-                      component={Link}
-                      href="https://github.com/tonylilui"
-                      target="_blank"
-                      sx={{
-                        color: '#4a90e2',
-                        border: '1px solid rgba(74, 144, 226, 0.3)',
-                        '&:hover': {
-                          background: 'rgba(74, 144, 226, 0.1)',
-                          borderColor: '#4a90e2'
-                        }
-                      }}
-                    >
-                      <GitHubIcon />
-                    </IconButton>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                    <IconButton
-                      component={Link}
-                      href="https://linkedin.com/in/tonylilui"
-                      target="_blank"
-                      sx={{
-                        color: '#4a90e2',
-                        border: '1px solid rgba(74, 144, 226, 0.3)',
-                        '&:hover': {
-                          background: 'rgba(74, 144, 226, 0.1)',
-                          borderColor: '#4a90e2'
-                        }
-                      }}
-                    >
-                      <LinkedInIcon />
-                    </IconButton>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                    <IconButton
-                      component={Link}
-                      href="https://www.instagram.com/tonystackofficial"
-                      target="_blank"
-                      sx={{
-                        color: '#4a90e2',
-                        border: '1px solid rgba(74, 144, 226, 0.3)',
-                        '&:hover': {
-                          background: 'rgba(74, 144, 226, 0.1)',
-                          borderColor: '#4a90e2'
-                        }
-                      }}
-                    >
-                      <InstagramIcon />
-                    </IconButton>
-                  </motion.div>
-                </Box>
+                gap: 2.5,
+              }}
+            >
+              <Typography variant="body2" sx={{ color: '#64748b' }}>
+                Or connect with me on
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1.5 }}>
+                {[
+                  {
+                    icon: <GitHubIcon />,
+                    href: 'https://github.com/tonylilui',
+                  },
+                  {
+                    icon: <LinkedInIcon />,
+                    href: 'https://linkedin.com/in/tonylilui',
+                  },
+                  {
+                    icon: <InstagramIcon />,
+                    href: 'https://www.instagram.com/tonystackofficial',
+                  },
+                ].map((social) => (
+                  <IconButton
+                    key={social.href}
+                    component={Link}
+                    href={social.href}
+                    target="_blank"
+                    sx={{
+                      color: '#64748b',
+                      border: '1px solid rgba(96, 165, 250, 0.1)',
+                      borderRadius: '12px',
+                      width: 42,
+                      height: 42,
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        color: '#60a5fa',
+                        borderColor: 'rgba(96, 165, 250, 0.3)',
+                        background: 'rgba(96, 165, 250, 0.06)',
+                      },
+                    }}
+                  >
+                    {social.icon}
+                  </IconButton>
+                ))}
               </Box>
-            </motion.div>
+            </Box>
           </Paper>
-        </motion.section>
-      </Stack>
+        </motion.div>
+      </Box>
 
-      {/* Fixed Arrow Indicator */}
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ borderRadius: '12px' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
+      {/* Scroll indicator */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{
-          opacity: showScrollIndicator ? 1 : 0,
-          y: showScrollIndicator ? 0 : 20
+          opacity: showScroll ? 1 : 0,
+          y: showScroll ? 0 : 20,
         }}
-        transition={{
-          duration: 0.4,
-          ease: "easeOut"
-        }}
+        transition={{ duration: 0.3 }}
         style={{
           position: 'fixed',
+          bottom: 32,
           left: '50%',
-          bottom: '40px',
           transform: 'translateX(-50%)',
+          zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '8px',
           cursor: 'pointer',
-          zIndex: 10,
-          pointerEvents: showScrollIndicator ? 'auto' : 'none'
+          pointerEvents: showScroll ? 'auto' : 'none',
         }}
-        onClick={scrollToNextSection}
+        onClick={() =>
+          document
+            .getElementById('about')
+            ?.scrollIntoView({ behavior: 'smooth' })
+        }
       >
         <motion.div
-          animate={{
-            y: showScrollIndicator ? [0, 8, 0] : 0,
-            opacity: showScrollIndicator ? [0.3, 1, 0.3] : 0,
-          }}
-          transition={{
-            duration: 2,
-            repeat: showScrollIndicator ? Infinity : 0,
-            ease: "easeInOut"
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '-12px'
-          }}
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
           <KeyboardArrowDownIcon
-            sx={{
-              color: '#4a90e2',
-              fontSize: '2.5rem',
-              filter: 'drop-shadow(0 0 10px rgba(74, 144, 226, 0.4))',
-            }}
-          />
-          <KeyboardArrowDownIcon
-            sx={{
-              color: '#4a90e2',
-              fontSize: '2.5rem',
-              opacity: 0.7,
-              marginTop: '-12px',
-              filter: 'drop-shadow(0 0 10px rgba(74, 144, 226, 0.2))',
-            }}
+            sx={{ color: '#60a5fa', fontSize: '2rem', opacity: 0.6 }}
           />
         </motion.div>
         <Typography
           variant="caption"
           sx={{
-            color: 'rgba(74, 144, 226, 0.8)',
-            fontSize: '0.75rem',
+            color: 'rgba(96, 165, 250, 0.5)',
+            fontSize: '0.65rem',
             fontWeight: 500,
-            letterSpacing: '0.1em',
+            letterSpacing: '0.15em',
             textTransform: 'uppercase',
-            textShadow: '0 0 10px rgba(74, 144, 226, 0.3)',
-            opacity: 0.8
           }}
         >
           Scroll
         </Typography>
       </motion.div>
     </Container>
+  );
+}
+
+// ── Section Heading Sub-component ────────────────────────────────────
+function SectionHeading({ number, title }: { number: string; title: string }) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+      <Typography
+        sx={{
+          color: '#60a5fa',
+          fontFamily: "'Inter', monospace",
+          fontSize: '0.85rem',
+          fontWeight: 500,
+        }}
+      >
+        {number}.
+      </Typography>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 700,
+          color: '#e2e8f0',
+          fontSize: { xs: '1.5rem', md: '1.8rem' },
+        }}
+      >
+        {title}
+      </Typography>
+      <Box
+        sx={{
+          flexGrow: 1,
+          height: '1px',
+          background: 'rgba(96, 165, 250, 0.1)',
+          maxWidth: 200,
+        }}
+      />
+    </Box>
   );
 }

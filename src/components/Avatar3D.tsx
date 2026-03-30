@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -8,64 +8,62 @@ interface Avatar3DProps {
   currentSection: string;
 }
 
-export function Avatar3D({ scrollProgress, currentSection }: Avatar3DProps) {
+export function Avatar3D({ currentSection }: Avatar3DProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/avatar.glb');
-  const targetRotation = useRef({ x: 0, y: 0, z: 0 });
-  const targetPosition = useRef({ x: 0, y: 0, z: 0 });
-  const targetScale = useRef(1);
+  const target = useRef({ x: 0, y: 0, z: 0, posX: 0, posY: 0, scale: 1 });
 
-  useEffect(() => {
-    // Update target transformations based on current section
+  // Compute target transforms based on section
+  const getSectionConfig = () => {
     switch (currentSection) {
-      case 'home':
-        targetRotation.current = { x: 0, y: Math.PI * 2 * scrollProgress, z: 0 };
-        targetPosition.current = { x: 0, y: 0, z: 0 };
-        targetScale.current = 1;
-        break;
       case 'about':
-        targetRotation.current = { x: Math.PI / 4, y: Math.PI * 2 * scrollProgress, z: 0 };
-        targetPosition.current = { x: 2, y: 0, z: 0 };
-        targetScale.current = 1.2;
-        break;
+        return { x: 0.15, y: 0, z: 0, posX: 2.5, posY: 0.3, scale: 1.1 };
       case 'projects':
-        targetRotation.current = { x: 0, y: Math.PI * 2 * scrollProgress, z: Math.PI / 4 };
-        targetPosition.current = { x: -2, y: 0, z: 0 };
-        targetScale.current = 1.5;
-        break;
+        return { x: 0, y: 0, z: 0.15, posX: -2.5, posY: 0, scale: 1.3 };
       case 'contact':
-        targetRotation.current = { x: Math.PI / 4, y: Math.PI * 2 * scrollProgress, z: -Math.PI / 4 };
-        targetPosition.current = { x: 0, y: -2, z: 0 };
-        targetScale.current = 0.8;
-        break;
+        return { x: 0.1, y: 0, z: -0.1, posX: 0, posY: -1.5, scale: 0.9 };
+      default: // home
+        return { x: 0, y: 0, z: 0, posX: 0, posY: 0, scale: 1 };
     }
-  }, [currentSection, scrollProgress]);
+  };
 
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      // Smooth interpolation for all transformations
-      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * delta * 2;
-      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * delta * 2;
-      groupRef.current.rotation.z += (targetRotation.current.z - groupRef.current.rotation.z) * delta * 2;
+  useFrame((state, delta) => {
+    if (!groupRef.current) return;
 
-      groupRef.current.position.x += (targetPosition.current.x - groupRef.current.position.x) * delta * 2;
-      groupRef.current.position.y += (targetPosition.current.y - groupRef.current.position.y) * delta * 2;
-      groupRef.current.position.z += (targetPosition.current.z - groupRef.current.position.z) * delta * 2;
+    const config = getSectionConfig();
+    const t = target.current;
+    t.x = config.x;
+    t.y = config.y;
+    t.z = config.z;
+    t.posX = config.posX;
+    t.posY = config.posY;
+    t.scale = config.scale;
 
-      const currentScale = groupRef.current.scale.x;
-      const newScale = currentScale + (targetScale.current - currentScale) * delta * 2;
-      groupRef.current.scale.set(newScale, newScale, newScale);
+    const g = groupRef.current;
+    const lerp = 1 - Math.pow(0.02, delta); // Frame-rate-independent smooth lerp
 
-      // Add a subtle floating animation
-      groupRef.current.position.y += Math.sin(Date.now() * 0.001) * 0.001;
-    }
+    // Gentle continuous Y rotation + section-based tilt (x, z)
+    g.rotation.y += delta * 0.4; // Slow, steady spin
+    g.rotation.x += (t.x - g.rotation.x) * lerp;
+    g.rotation.z += (t.z - g.rotation.z) * lerp;
+
+    // Smooth position
+    g.position.x += (t.posX - g.position.x) * lerp;
+    g.position.y += (t.posY - g.position.y) * lerp;
+
+    // Subtle floating bob
+    g.position.y += Math.sin(state.clock.elapsedTime * 0.8) * 0.003;
+
+    // Smooth scale
+    const s = g.scale.x + (t.scale - g.scale.x) * lerp;
+    g.scale.setScalar(s);
   });
 
   return (
     <primitive
       ref={groupRef}
       object={scene}
-      scale={0.5} // You may need to adjust this value based on your model's size
+      scale={0.5}
       position={[0, 0, 0]}
     />
   );
