@@ -169,7 +169,7 @@ export default function Home() {
                 mb: 1,
               }}
             >
-              Tony.
+              Tony Li.
             </Typography>
           </motion.div>
 
