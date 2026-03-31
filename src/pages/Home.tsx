@@ -43,7 +43,7 @@ const projectData = [
     tech: ['OpenLayers', 'Node.js', 'WebSockets', 'PostgreSQL'],
     gradient: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
     github: 'https://github.com/tonylilui/01-Secure-Geo-Intelligence-GEOINT-Dashboard',
-    demo: 'https://your-geoint-demo.com',
+    demo: 'https://secure-geo-intelligence-geoint-dashboard-production.up.railway.app/',
     focus: 'Spatial Interest / Real-time Monitoring',
   },
   {
