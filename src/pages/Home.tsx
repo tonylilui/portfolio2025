@@ -42,7 +42,7 @@ const projectData = [
       'A real-time situational awareness platform for monitoring maritime or aerial assets. Implements geofencing alerts and spatial data visualization for territorial security.',
     tech: ['OpenLayers', 'Node.js', 'WebSockets', 'PostgreSQL'],
     gradient: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
-    github: 'https://github.com/tonylilui/01-Secure-Geo-Intelligence-GEOINT-Dashboard',
+    github: 'https://github.com/tonylilui/01-Secure-Geo-Intelligence--GEOINT--Dashboard',
     demo: 'https://secure-geo-intelligence-geoint-dashboard-production.up.railway.app/',
     focus: 'Spatial Interest / Real-time Monitoring',
   },
